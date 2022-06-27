@@ -1,12 +1,12 @@
 # GEATools
 
-Esta ferramenta tem o objetivo de aprimorar os resultados obtidos com o programa NDpredict na associação de progenitores/descendentes de galáxias em diferentes redshifts usando a sequência vermelha.
+This tool aims to improve the results obtained with the NDpredict program in the association of progenitors/descendants of galaxies at different redshifts using the red sequence.
 
-## Pré-requisitos
+## Pre-requisites
 
-Antes de usar a ferramenta é recomendável a criação de um ambiente de programação com Python 3.x.x e o R 3.x.x.
+Before using the tool, it is recommended to create a programming environment with Python 3.x.x and R 3.x.x.
 
-É necessário ter os seguintes pacotes instalados no ambiente:
+You must have the following packages installed in your environment:
 - rpy2
 - numpy 
 - matplotlib 
@@ -15,44 +15,44 @@ Antes de usar a ferramenta é recomendável a criação de um ambiente de progra
 - scipy 
 - xlsxwriter
 
-Com o Anaconda podem ser instalados com o comando abaixo:
+With Anaconda they can be installed with the command below:
 ```
 conda install -c conda-forge rpy2 numpy matplotlib h5py pandas scipy xlsxwriter
 ```
-Na mesma pasta que foi baixado os arquivos da ferramenta deve conter as bibliotecas NDpredict (https://github.com/sawellons/NDpredict) e o illustris_python (https://github.com/illustristng/illustris_python). Essa última é necessária ser for trabalhar com os dados baixados da simulação Illustris. É importante verificar o funcionamento das bibliotecas seguindo o passo a passo descrito nas páginas do github.
+In the same folder that the tool files were downloaded should contain the NDpredict (https://github.com/sawellons/NDpredict) and illustris_python (https://github.com/illustristng/illustris_python) libraries. The latter is necessary if working with the data downloaded from the Illustris simulation. It is important to verify the functioning of the libraries following the step-by-step described in the github pages.
 
-No arquivo config.py, dentro da pasta GEATools, é necessário definir os parâmetros abaixo:
-- R_HOME => Caminho da pasta raiz do R
-- R_USER => Caminho da pasta raiz do pacote rpy2
-- simulation_name => Nome da simulação do Illustris selecionada
+In the config.py file, inside the GEATools folder, it is necessary to define the parameters below:
+- R_HOME => R root folder path
+- R_USER => Path of the root folder of the rpy2 package
+- simulation_name => Name of selected Illustris simulation
 
-Após isso, a ferramenta está pronta para o uso.
+After that, the tool is ready to use.
 
-## Baixando dados do Illustris
+## Downloading data from Illustris
 
-A ferramenta desenvolvida foi testada com os dados da simulação Illustris, e possui scripts que auxiliam na obtenção dos dados disponíveis.
+The developed tool was tested with Illustris simulation data, and has scripts that help in obtaining the available data.
 
-Na pasta Complementary Scripts, com o script down_files.py é possível baixar os dados das simulações do Illustris.
+In the Complementary Scripts folder, with the down_files.py script it is possible to download the data from the Illustris simulations.
 
-Também nesta pasta, temos o script get_subhalo_descendant_tree.py, necessário para baixar as árvores de descendência dos subhalos que forem ser analisados, em um formato compatível com o programa. O resultado de execução desse script gera a pasta Auxiliary Data, na qual o conteúdo deve ser colocado na mesma pasta presente na raiz do programa.
+Also in this folder, we have the get_subhalo_descendant_tree.py script, necessary to download the descendant trees of the subhalos to be analyzed, in a format compatible with the program. The result of executing this script generates the Auxiliary Data folder, in which the content must be placed in the same folder present in the root of the program.
 
-## Funcionalidades
+## Functionalities
 
-O script analysis.py ilustra o funcionamento básico da aplicação.
+The analysis.py script illustrates the basic functioning of the application.
 
-O primeiro passo é importar a biblioteca fazendo:
+The first step is to import the library by doing:
 ```
 import GEAtools as geat
 ```
 
-Após, é necessário definir o snapshot/redshift a serem analisados em z0 e zf e o id do subhalo em z0 que será o progenitor/descendente escolhido. No script isso é definido em:
+Afterwards, it is necessary to define the snapshot/redshift to be analyzed in z0 and zf and the subhalo id in z0 that will be the chosen progenitor/descendant. In the script this is defined in:
 ```
 snap_num_z0 = 50
 snap_num_zf = 53
 start_subhalo_z0 = 21 
 ```
 
-Assim, é obtido o resultado com o NDpredict, fazendo:
+Thus, the result is obtained with NDpredict, doing:
 ```
 prog_subhalo_id = start_subhalo_z0
 true_desc_subhalo_id = subhalo_descendant_tree[snap_num_zf]
@@ -63,13 +63,13 @@ sample = geat.get_sample(snap_num_zf, 0)
 probs_ndp = geat.calc_prob_ndp(sample, z0, zf, M0)
 ```
 
-E o resultado usando a sequência vermelha:
+And the result using the red sequence:
 ```
 probs_rg = geat.calc_prob_rg(sample, zf)
 geat.adjust_probs_scale(probs_rg)
 ```
 
-Com o resultado obtido com o NDpredict e o RG, pode-se escolher o método de combinação e os valores dos pesos, b1 e b2, para combinar os resultados com o objetivo de melhoria das probabilidades obtidas com o NDpredict. Isso é feito no script em:
+With the result obtained with NDpredict and RG, you can choose the combination method and the weight values, b1 and b2, to combine the results with the objective of improving the probabilities obtained with NDpredict. This is done in the script at:
 ```
 method = 'kk'
 kk = []
@@ -79,6 +79,6 @@ b2=0.25
 probs_comb = geat.calc_comb(method, probs_ndp, probs_rg, b1, b2)
 ```
 
-No script isso também é feito para os outros métodos de combinação disponíveis e pesos.
+In the script this is also done for the other available combination methods and weights.
 
-Ao final da execução do script são gerados gráficos e tabelas com os resultados, essas informações ficam salvas na pasta Results, que é criada ao fim da execução.
+At the end of the script execution, graphs and tables are generated with the results, this information is saved in the Results folder, which is created at the end of the execution.

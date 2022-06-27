@@ -18,3 +18,4 @@ analysis-ndp.py
 analysis-rg (each object).py
 analysis-rg.py
 ndp-direct.py
+graphics_from_results.py
